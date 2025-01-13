@@ -1,0 +1,167 @@
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { Trophy, Heart, Users, Target } from 'lucide-react';
+
+// Sample data - replace with actual data from your spreadsheet
+const departmentData = [
+  { name: 'Math', hearts: 45 },
+  { name: 'Science', hearts: 38 },
+  { name: 'English', hearts: 52 },
+  { name: 'Social Studies', hearts: 31 },
+  { name: 'Fine Arts', hearts: 28 },
+  { name: 'PE', hearts: 22 },
+  { name: 'Special Ed', hearts: 34 }
+];
+
+const heartTypeData = [
+  { name: 'Blue Hearts', value: 75 },
+  { name: 'Green Hearts', value: 120 },
+  { name: 'Pink Hearts', value: 95 },
+  { name: 'Purple Hearts', value: 80 }
+];
+
+const weeklyProgress = [
+  { week: 'Week 1', observations: 25 },
+  { week: 'Week 2', observations: 45 },
+  { week: 'Week 3', observations: 65 },
+  { week: 'Week 4', observations: 85 }
+];
+
+const COLORS = ['#3b82f6', '#22c55e', '#ec4899', '#a855f7'];
+
+const Dashboard = () => {
+  const totalHearts = heartTypeData.reduce((sum, type) => sum + type.value, 0);
+  const totalTeachers = 42; // Replace with actual count
+  const averagePerTeacher = (totalHearts / totalTeachers).toFixed(1);
+
+  return (
+    <div className="p-6 space-y-6 bg-gray-50">
+      {/* Header Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center space-x-4">
+              <Trophy className="h-8 w-8 text-yellow-500" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Total Hearts</p>
+                <h3 className="text-2xl font-bold">{totalHearts}</h3>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center space-x-4">
+              <Users className="h-8 w-8 text-blue-500" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Participating Teachers</p>
+                <h3 className="text-2xl font-bold">{totalTeachers}</h3>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center space-x-4">
+              <Heart className="h-8 w-8 text-red-500" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Hearts per Teacher</p>
+                <h3 className="text-2xl font-bold">{averagePerTeacher}</h3>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center space-x-4">
+              <Target className="h-8 w-8 text-green-500" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Program Progress</p>
+                <h3 className="text-2xl font-bold">75%</h3>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Department Performance */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Hearts by Department</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={departmentData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="hearts" fill="#3b82f6" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Heart Types Distribution */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Heart Types Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={heartTypeData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {heartTypeData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Weekly Progress */}
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Weekly Observation Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={weeklyProgress} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="week" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="observations" stroke="#3b82f6" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
